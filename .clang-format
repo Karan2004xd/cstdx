@@ -1,0 +1,27 @@
+Language: C
+BasedOnStyle: LLVM
+
+# One liners options 
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionOnASingleLine: Inline
+AllowShortIfStatementOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+
+# Pointer formatting
+PointerAlignment: Left
+
+# Alignment for struct fields and assignment
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: None
+AlignConsecutiveMacros: Consecutive
+
+# Header Includes
+SortInclude: CaseSensitive
+IncludeBlocks: Regroup
+
+# Spacing and Comments
+SpaceBeforeAssignmentOpertors: true
+SpaceAfterCStyleCast: true
+SpaceInParenthesis: false
+CommentsAlignment:
+  MustBeAligned: true

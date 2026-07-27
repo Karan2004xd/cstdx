@@ -1,0 +1,40 @@
+Checks: '
+  -*,
+  bugprone-*,
+  readability-*,
+  clang-analyzer-*,
+  cert-*,
+  portability-*,
+  -bugprone-easily-swappable-parameters,
+  -readability-magic-numbers,
+  -readability-function-cognitive-complexity
+'
+
+# Treat critical bugs and static analysis findings as compilation errors
+WarningAsErrors: 'bugprone-*,clang-analyzer-*,cert-*'
+
+# Analyze all the header files
+HeaderFilterRegex: '.*'
+
+# Ignore the Headers provided by the standard
+SystemHeaders: false
+
+CheckOptions:
+  - key:    readability-indentifier-naming.FunctionCase
+    value:  lower_case
+  - key:    readability-indentifier-naming.VariableCase
+    value:  lower_case
+  - key:    readability-indentifier-naming.TypedefCase
+    value:  CamelCase
+  - key:    readability-indentifier-naming.structCase
+    value:  lower_case 
+  - key:    readability-indentifier-naming.EnumCase
+    value:  CamelCase
+  - key:    readability-indentifier-naming.EnumConstantCase
+    value:  UPPER_CASE
+  - key:    readability-indentifier-naming.MacroDefinitionCase
+    value:  UPPER_CASE
+
+  # CERT C security checks
+  - key:    cert-err34-c.DiagnosticLevel
+    value:  warning
