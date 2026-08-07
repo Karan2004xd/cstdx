@@ -1,4 +1,4 @@
-project(cstdx_tests)
+project(tests)
 include(FetchContent)
 
 FetchContent_Declare(
@@ -8,11 +8,17 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(doctest)
 
-set(TEST_SOURCES)
+set(TEST_SOURCES
+  "cx_vector_test.cpp"
+)
+
 add_executable(${PROJECT_NAME} ${TEST_SOURCES})
 
-target_compile_definitions(${PROJECT_NAME} PUBLIC TESTING)
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  TESTING
+  DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+)
 
 target_link_libraries(
-  ${PROJECT_NAME} src doctest
+  ${PROJECT_NAME} PRIVATE src doctest
 )
