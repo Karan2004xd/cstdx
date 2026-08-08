@@ -15,6 +15,8 @@ int cx_vector_push(cx_vector_t *self, const void *value);
 int cx_vector_fill(const cx_vector_t *self, void *dst, long index);
 const void *cx_vector_get(const cx_vector_t *self, long index);
 
+int cx_vector_set(cx_vector_t *self, const void *value, long index);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

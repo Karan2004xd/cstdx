@@ -10,6 +10,7 @@ static int check_positive_(long value, int allow_zero);
 static int check_index_(const cx_vector_t *self, long index);
 static void set_value_(cx_vector_t *self, const void *value, long index);
 static int expand_vector_(cx_vector_t *self);
+static void *get_index_ptr_(const cx_vector_t *self, long index);
 
 cx_vector_t *cx_vector_create(long elem_size) {
   if (check_positive_(elem_size, 0) == -1) {
@@ -65,15 +66,18 @@ int cx_vector_push(cx_vector_t *self, const void *value) {
 }
 
 int cx_vector_fill(const cx_vector_t *self, void *dst, long index) {
-  if (check_index_(self, index) == -1) return -1;
-  const char *src = (char *) self->data + (index * self->elem_size);
+  const void *src = get_index_ptr_(self, index);
+  if (!src) return -1;
   memcpy(dst, src, self->elem_size);
   return 0;
 }
 
+int cx_vector_set(cx_vector_t *self, const void *value, long index) {
+  return set_value_(self, value, index);
+}
+
 const void *cx_vector_get(const cx_vector_t *self, long index) {
-  if (check_index_(self, index) == -1) return NULL;
-  return (char *) self->data + (index * self->elem_size);
+  return get_index_ptr_(self, index);
 }
 
 static int check_positive_(long value, int allow_zero) {
@@ -89,7 +93,11 @@ static int check_index_(const cx_vector_t *self, long index) {
 }
 
 static void set_value_(cx_vector_t *self, const void *value, long index) {
-  char *dst = (char *) self->data + (index * self->elem_size);
+  void *dst = get_index_ptr_(self, index);
+  if (!dst) {
+    LOG_WARN("Unable to set value at index (%ld)", index);
+    return ;
+  }
   memcpy(dst, value, self->elem_size);
 }
 
@@ -106,4 +114,11 @@ static int expand_vector_(cx_vector_t *self) {
   self->data = temp;
   self->capacity = new_capacity;
   return 0;
+}
+
+static void *get_index_ptr_(const cx_vector_t *self, long index) {
+  if (check_index_(self, index) == -1) {
+    return NULL;
+  }
+  return (char *) self->data + (index * self->elem_size);
 }
