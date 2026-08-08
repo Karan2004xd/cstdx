@@ -5,12 +5,14 @@
 #error "Error: This is an internal header and not to be made public."
 #endif // CX_VECTOR_PRIVATE_ACCESS
 
+#include <stddef.h>
+#include <stdint.h>
+
 #define DEFAULT_CAPACITY 10
 #define DEFAULT_EXPAND_FACTOR 2
 #define DEFAULT_SHRINK_THRESHOLD 4
 #define DEFAULT_SHRINK_FACTOR 2
-
-#include <stddef.h>
+#define MAX_CAPACITY(elem_size) SIZE_MAX / elem_size
 
 typedef struct cx_vector {
   void *data;

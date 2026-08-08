@@ -15,8 +15,9 @@ set(TEST_SOURCES
 add_executable(${PROJECT_NAME} ${TEST_SOURCES})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-  TESTING
   DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+  TESTING
+  CX_VECTOR_PRIVATE_ACCESS
 )
 
 target_link_libraries(
