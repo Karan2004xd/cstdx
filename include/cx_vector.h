@@ -16,6 +16,10 @@ int cx_vector_fill(const cx_vector_t *self, void *dst, long index);
 const void *cx_vector_get(const cx_vector_t *self, long index);
 
 int cx_vector_set(cx_vector_t *self, const void *value, long index);
+int cx_vector_pop(cx_vector_t *self, long index);
+void cx_vector_clear(cx_vector_t *self);
+
+int cx_vector_shrink_to_fit(cx_vector_t *self);
 
 #ifdef __cplusplus
 }

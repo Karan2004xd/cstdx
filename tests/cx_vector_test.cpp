@@ -13,12 +13,16 @@ TEST_CASE("cx_vector create") {
   int val;
   CHECK(cx_vector_fill(vec, &val, 0) == -1);
 
-  for (int i = 1; i <= 5; i++) {
+  for (int i = 0; i < DEFAULT_CAPACITY; i++) {
     REQUIRE(cx_vector_push(vec, &i) != -1);
-    REQUIRE(cx_vector_fill(vec, &val, i - 1) != -1);
-    REQUIRE(cx_vector_get(vec, i - 1) != nullptr);
-    CHECK(*(const int *) cx_vector_get(vec, i - 1) == i);
+    REQUIRE(cx_vector_fill(vec, &val, i) != -1);
+    REQUIRE(cx_vector_get(vec, i) != nullptr);
+    CHECK(*(const int *) cx_vector_get(vec, i) == i);
     CHECK(val == i);
   }
+
+  REQUIRE(vec->size == DEFAULT_CAPACITY);
+  REQUIRE(cx_vector_pop(vec, 0) != -1);
+  CHECK(*(const int *) cx_vector_get(vec, 0) == 1);
   cx_vector_free(vec, NULL);
 }

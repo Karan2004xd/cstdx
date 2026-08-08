@@ -2,15 +2,15 @@
 #include "../include/cx_vector.h"
 #include "../include/macros.h"
 
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
 static int check_positive_(long value, int allow_zero);
 static int check_index_(const cx_vector_t *self, long index);
-static void set_value_(cx_vector_t *self, const void *value, long index);
+static int set_value_(cx_vector_t *self, const void *value, long index);
 static int expand_vector_(cx_vector_t *self);
 static void *get_index_ptr_(const cx_vector_t *self, long index);
+static int try_to_shrink_(cx_vector_t *self);
 
 cx_vector_t *cx_vector_create(long elem_size) {
   if (check_positive_(elem_size, 0) == -1) {
@@ -60,8 +60,11 @@ int cx_vector_push(cx_vector_t *self, const void *value) {
     if (res != 0) return -1;
   }
 
-  set_value_(self, value, self->size);
   self->size++;
+  if (set_value_(self, value, self->size - 1) == -1) {
+    self->size--;
+    return -1;
+  }
   return 0;
 }
 
@@ -80,6 +83,33 @@ const void *cx_vector_get(const cx_vector_t *self, long index) {
   return get_index_ptr_(self, index);
 }
 
+int cx_vector_pop(cx_vector_t *self, long index) {
+  if (check_index_(self, index) == -1) return -1;
+
+  size_t u_index = index;
+  if (u_index < self->size - 1) {
+    const void *src;
+    void *dst;
+
+    if ((src = get_index_ptr_(self, index + 1)) == NULL) return -1;
+    if ((dst = get_index_ptr_(self, index)) == NULL) return -1;
+    size_t bytes_to_move = self->elem_size * (self->size - index);
+    memmove(dst, src, bytes_to_move);
+  }
+  self->size--;
+  try_to_shrink_(self);
+  return 0;
+}
+
+void cx_vector_clear(cx_vector_t *self) {
+  self->size = 0;
+  try_to_shrink_(self);
+}
+
+int cx_vector_shrink_to_fit(cx_vector_t *self) {
+  return try_to_shrink_(self);
+}
+
 static int check_positive_(long value, int allow_zero) {
   return (value < 0 || (value == 0 && !allow_zero)) ? -1 : 0;
 }
@@ -92,13 +122,14 @@ static int check_index_(const cx_vector_t *self, long index) {
   return 0;
 }
 
-static void set_value_(cx_vector_t *self, const void *value, long index) {
+static int set_value_(cx_vector_t *self, const void *value, long index) {
   void *dst = get_index_ptr_(self, index);
   if (!dst) {
     LOG_WARN("Unable to set value at index (%ld)", index);
-    return ;
+    return -1;
   }
   memcpy(dst, value, self->elem_size);
+  return 0;
 }
 
 static int expand_vector_(cx_vector_t *self) {
@@ -121,4 +152,25 @@ static void *get_index_ptr_(const cx_vector_t *self, long index) {
     return NULL;
   }
   return (char *) self->data + (index * self->elem_size);
+}
+
+static int try_to_shrink_(cx_vector_t *self) {
+  size_t cap_in_use = self->capacity / DEFAULT_SHRINK_THRESHOLD;
+
+  if (self->size >= cap_in_use || self->capacity <= DEFAULT_CAPACITY) {
+    LOG_INFO("No shrink needed yet!");
+    return 1;
+  }
+
+  size_t new_capacity = self->capacity / DEFAULT_SHRINK_FACTOR;
+  void *temp = realloc(self->data, new_capacity * self->elem_size);
+
+  if (!temp) {
+    LOG_WARN("Failed to shrink");
+    return -1;
+  }
+
+  self->data = temp;
+  self->capacity = new_capacity;
+  return 0;
 }

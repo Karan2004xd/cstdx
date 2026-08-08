@@ -12,5 +12,5 @@ target_include_directories(
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
   CX_VECTOR_PRIVATE_ACCESS
-  TESTING
+  # TESTING
 )
