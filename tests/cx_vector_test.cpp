@@ -22,7 +22,16 @@ TEST_CASE("cx_vector create") {
   }
 
   REQUIRE(vec->size == DEFAULT_CAPACITY);
-  REQUIRE(cx_vector_pop(vec, 0) != -1);
+  REQUIRE(cx_vector_pop(vec, 0, NULL) != -1);
   CHECK(*(const int *) cx_vector_get(vec, 0) == 1);
+
+  REQUIRE(cx_vector_resize(vec, 3, NULL) != -1);
+  CHECK(vec->size == 3);
+
+  cx_vector_free(vec, NULL);
+}
+
+TEST_CASE("cx_vector_create - (fail)") {
+  cx_vector_t *vec = cx_vector_create(sizeof(int));
   cx_vector_free(vec, NULL);
 }
