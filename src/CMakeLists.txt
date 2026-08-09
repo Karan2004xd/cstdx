@@ -1,6 +1,8 @@
-project(cstdx_src)
+project(src)
 
-add_library(${PROJECT_NAME})
+add_library(${PROJECT_NAME}
+  "./cx_error.h"
+)
 
 target_include_directories(
   ${PROJECT_NAME}
