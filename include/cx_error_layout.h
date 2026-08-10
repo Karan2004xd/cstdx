@@ -7,6 +7,8 @@
 *   6-bits  -> 64 error families.
 *   10-bits -> 1024 error category, per family.
 *   16-bits -> 65,536 error codes, per category.
+*
+* info 32-bits: extra context for the error.
 **/
 
 #ifdef __cplusplus

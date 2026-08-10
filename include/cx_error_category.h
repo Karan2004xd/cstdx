@@ -8,9 +8,9 @@ extern "C" {
 #ifdef TESTING
 // Test Category
 typedef enum cx_test_category {
-  CX_ERROR_CATEGORY_NONE        = 0x000,
-  CX_ERROR_CATEGORY_TEST        = 0x001,
-  CX_ERROR_CATEGORY_MAX         = 0x3FF    // 10-bits
+  CX_ERROR_CATEGORY_TEST_NONE        = 0x000,
+  CX_ERROR_CATEGORY_TEST_VOID        = 0x001,
+  CX_ERROR_CATEGORY_TEST_MAX         = 0x3FF    // 10-bits
 } cx_test_category_t;
 #endif // TESTING
 

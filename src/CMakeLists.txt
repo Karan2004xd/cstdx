@@ -1,7 +1,7 @@
 project(src)
 
 add_library(${PROJECT_NAME}
-  "./cx_error.h"
+  "./cx_error.c"
 )
 
 target_include_directories(
@@ -9,3 +9,5 @@ target_include_directories(
     PRIVATE 
   ${CMAKE_SOURCE_DIR}/include
 )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE TESTING)
