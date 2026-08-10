@@ -59,20 +59,15 @@ TEST_CASE("cx_error: getters") {
 }
 
 TEST_CASE("cx_error: checkers") {
-  static uint32_t info = 100;
-  static cx_error_t lhs = cx_error_create(
+  const uint32_t info = 100;
+  cx_error_t lhs = cx_error_create(
       CX_ERROR_FAMILY_TEST_VOID,
       CX_ERROR_CATEGORY_TEST_VOID,
       CX_ERROR_CODE_TEST_VOID,
       info
   );
 
-  static cx_error_t rhs = cx_error_create(
-      CX_ERROR_FAMILY_TEST_VOID,
-      CX_ERROR_CATEGORY_TEST_VOID,
-      CX_ERROR_CODE_TEST_VOID,
-      info
-  );
+  cx_error_t rhs = lhs;
   int res = 0;
 
   SUBCASE("are equal") {
@@ -99,18 +94,14 @@ TEST_CASE("cx_error: checkers") {
 }
 
 TEST_CASE("cx_error: setters") {
-  static const cx_error_t err = cx_error_create(
+  const cx_error_t err = cx_error_create(
       CX_ERROR_FAMILY_TEST_VOID,
       CX_ERROR_CATEGORY_TEST_VOID,
       CX_ERROR_CODE_TEST_VOID,
       250 
   );
-  static cx_error_t err_cp;
-  cx_error_t expected = CX_ERROR(err.family, err.category, err.code, err.info);
-
-  SUBCASE("with error") {
-    err_cp = cx_error_with_error(err);
-  }
+  cx_error_t err_cp;
+  cx_error_t expected = err;
 
   SUBCASE("with family") {
     err_cp = cx_error_with_family(err, CX_ERROR_FAMILY_TEST_NONE);
@@ -133,4 +124,18 @@ TEST_CASE("cx_error: setters") {
   }
 
   CHECK(cx_error_is_equal(err_cp, expected) == 1);
+}
+
+TEST_CASE("cx_error: converters") {
+  const cx_error_t err = cx_error_create(
+      CX_ERROR_FAMILY_TEST_VOID,
+      CX_ERROR_CATEGORY_TEST_VOID,
+      CX_ERROR_CODE_TEST_VOID,
+      250 
+  );
+
+  uint64_t u64_err = cx_error_to_u64(err);
+  cx_error_t err_64u = cx_error_from_u64(u64_err);
+
+  CHECK(cx_error_is_equal(err_64u, err) == 1);
 }

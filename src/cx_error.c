@@ -54,16 +54,27 @@ cx_error_t cx_error_with_info(cx_error_t self, uint32_t info) {
   return create_error_(self.family, self.category, self.code, info);
 }
 
-cx_error_t cx_error_with_error(cx_error_t src) {
-  return create_error_(src.family, src.category, src.code, src.info);
-}
-
 int cx_error_is_equal(cx_error_t lhs, cx_error_t rhs) {
   if (lhs.family != rhs.family) return 0;
   if (lhs.category != rhs.category) return 0;
   if (lhs.code != rhs.code) return 0;
   if (lhs.info != rhs.info) return 0;
   return 1;
+}
+
+uint64_t cx_error_to_u64(cx_error_t self) {
+  return ((uint64_t) self.family    << CX_ERROR_FAMILY_SHIFT)   |
+         ((uint64_t) self.category  << CX_ERROR_CATEGORY_SHIFT) |
+         ((uint64_t) self.code      << CX_ERROR_CODE_SHIFT)     |
+         ((uint64_t) self.info      << CX_ERROR_INFO_SHIFT);
+}
+
+cx_error_t cx_error_from_u64(uint64_t raw) {
+  uint32_t family   = (uint32_t) ((raw >> CX_ERROR_FAMILY_SHIFT)    & CX_ERROR_FAMILY_MASK);
+  uint32_t category = (uint32_t) ((raw >> CX_ERROR_CATEGORY_SHIFT)  & CX_ERROR_CATEGORY_MASK);
+  uint32_t code     = (uint32_t) ((raw >> CX_ERROR_CODE_SHIFT)      & CX_ERROR_CODE_MASK);
+  uint32_t info     = (uint32_t) ((raw >> CX_ERROR_INFO_SHIFT)      & CX_ERROR_INFO_MASK);
+  return create_error_(family, category, code, info);
 }
 
 static cx_error_t create_error_(

@@ -8,3 +8,4 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wconversion -Wsign-conversion -Wall -Wex
 
 add_subdirectory("./src")
 add_subdirectory("./tests")
+add_subdirectory("./benchmarks")

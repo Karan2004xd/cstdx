@@ -25,10 +25,10 @@ static_assert(sizeof(cx_error_t) == 8, "The size of error struct must not exceed
 // Compile time option for creating error, but no assert based bound checks
 #define CX_ERROR(fam, cat, cd, inf) \
   ((cx_error_t){ \
-    .family   = (uint32_t) (fam & CX_ERROR_FAMILY_MASK), \
-    .category = (uint32_t) (cat & CX_ERROR_CATEGORY_MASK), \
-    .code     = (uint32_t) (cd & CX_ERROR_CODE_MASK), \
-    .info     = inf, \
+    .family   = (uint32_t) ((fam) & CX_ERROR_FAMILY_MASK), \
+    .category = (uint32_t) ((cat) & CX_ERROR_CATEGORY_MASK), \
+    .code     = (uint32_t) ((cd) & CX_ERROR_CODE_MASK), \
+    .info     = (inf), \
   })
 
 #define CX_ERROR_OK() \
@@ -57,9 +57,10 @@ cx_error_t cx_error_with_family(cx_error_t self, uint32_t family);
 cx_error_t cx_error_with_category(cx_error_t self, uint32_t category);
 cx_error_t cx_error_with_code(cx_error_t self, uint32_t code);
 cx_error_t cx_error_with_info(cx_error_t self, uint32_t info);
-cx_error_t cx_error_with_error(cx_error_t src);
 
 int cx_error_is_equal(cx_error_t lhs, cx_error_t rhs);
+uint64_t cx_error_to_u64(cx_error_t self);
+cx_error_t cx_error_from_u64(uint64_t raw);
 
 #ifdef __cplusplus
 }
